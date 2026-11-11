@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" fill="none" stroke="#7FD8FF" stroke-width="1.3">
+  <rect width="30" height="30" fill="#05070B"/>
+  <path d="M5 5L15 5 25 5M5 15L15 15 25 15M5 25L15 25 25 25M5 5L5 25M15 5L15 25M25 5L25 25M5 5L15 15 25 5M5 25L15 15" stroke="#2A3850"/>
+  <rect x="2.5" y="2.5" width="5" height="5" fill="#05070B"/>
+  <rect x="12.5" y="2.5" width="5" height="5" fill="#05070B" stroke="#FFB547"/>
+  <rect x="22.5" y="2.5" width="5" height="5" fill="#05070B"/>
+  <rect x="2.5" y="12.5" width="5" height="5" fill="#05070B" stroke="#FF7A9A"/>
+  <rect x="11.5" y="11.5" width="7" height="7" fill="#7FD8FF"/>
+  <rect x="22.5" y="12.5" width="5" height="5" fill="#05070B" stroke="#6FE3B4"/>
+  <rect x="2.5" y="22.5" width="5" height="5" fill="#05070B"/>
+  <rect x="12.5" y="22.5" width="5" height="5" fill="#05070B" stroke="#B39BFF"/>
+  <rect x="22.5" y="22.5" width="5" height="5" fill="#05070B"/>
+</svg>

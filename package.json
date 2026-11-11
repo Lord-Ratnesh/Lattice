@@ -1,0 +1,33 @@
+{
+  "name": "lattice-knowledge-graph",
+  "version": "1.0.0",
+  "description": "An interactive, local-first personal knowledge graph console for mapping notes, PDFs, papers, and images into a connected graph.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "d3": "^7.9.0",
+    "mammoth": "^1.8.0",
+    "pdfjs-dist": "^3.11.174"
+  },
+  "devDependencies": {
+    "jsdom": "^25.0.1",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
+  },
+  "keywords": [
+    "knowledge-graph",
+    "d3",
+    "pkm",
+    "rag",
+    "louvain",
+    "visualization",
+    "local-first"
+  ],
+  "license": "MIT"
+}

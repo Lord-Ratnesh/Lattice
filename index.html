@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="description" content="Lattice — Personal Knowledge Graph console for mapping notes, PDFs, papers, and images into a connected graph.">
+  <title>Lattice Knowledge Graph</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap">
+</head>
+<body>
+  <div class="app" id="app">
+    <header class="top">
+      <div class="brand">
+        <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true" fill="none" stroke="var(--ice)" stroke-width="1.3">
+          <path d="M5 5L15 5 25 5M5 15L15 15 25 15M5 25L15 25 25 25M5 5L5 25M15 5L15 25M25 5L25 25M5 5L15 15 25 5M5 25L15 15" stroke="var(--rule-hi)"/>
+          <rect x="2.5" y="2.5" width="5" height="5" fill="var(--void)"/><rect x="12.5" y="2.5" width="5" height="5" fill="var(--void)" stroke="var(--amber)"/><rect x="22.5" y="2.5" width="5" height="5" fill="var(--void)"/>
+          <rect x="2.5" y="12.5" width="5" height="5" fill="var(--void)" stroke="var(--rose)"/><rect x="11.5" y="11.5" width="7" height="7" fill="var(--ice)"/><rect x="22.5" y="12.5" width="5" height="5" fill="var(--void)" stroke="var(--mint)"/>
+          <rect x="2.5" y="22.5" width="5" height="5" fill="var(--void)"/><rect x="12.5" y="22.5" width="5" height="5" fill="var(--void)" stroke="var(--violet)"/><rect x="22.5" y="22.5" width="5" height="5" fill="var(--void)"/>
+        </svg>
+        <div><div class="brand-name">LATTICE</div><div class="brand-sub">Personal knowledge graph</div></div>
+      </div>
+      <div class="search pfield" id="searchWrap">
+        <span data-ico="search"></span>
+        <input id="search" type="search" placeholder="Search nodes, aliases, sources" autocomplete="off" spellcheck="false" aria-label="Search the graph">
+        <kbd>/</kbd>
+      </div>
+      <div class="top-stats" id="topStats"></div>
+      <div class="top-actions">
+        <span class="sync" id="sync" data-s="idle" title="Where your vault is saved"><i></i><span>Sample</span></span>
+        <button class="btn sm ai" id="aiSettingsBtn" title="Configure AI provider or local mode" aria-label="AI Settings"><span data-ico="spark"></span><span id="aiModeLabel">On-Device</span></button>
+        <button class="btn icon" id="undoBtn" title="Undo (Ctrl+Z)" aria-label="Undo" disabled><span data-ico="undo"></span></button>
+        <button class="btn hide-sm" id="addNodeBtn" title="Add a node by hand"><span data-ico="plus"></span>Node</button>
+        <button class="btn" id="exportBtn" title="Export, import"><span data-ico="download"></span><span class="hide-sm">Export</span></button>
+        <button class="btn icon" id="helpBtn" title="How it works and shortcuts (?)" aria-label="Help"><span data-ico="help"></span></button>
+        <button class="btn primary" id="ingestBtn"><span data-ico="upload"></span>Ingest</button>
+      </div>
+    </header>
+
+    <aside class="rail panel" aria-label="Sources and filters">
+      <section class="sec">
+        <div class="sec-h"><span>Sources</span><span class="row"><button class="btn sm danger" id="stopIngest" hidden><span data-ico="stop"></span>Stop</button><span class="meta" id="srcCount"></span></span></div>
+        <div class="drop" id="drop">
+          <div class="drop-t">Drop notes, PDFs, papers or photos of notes</div>
+          <div class="drop-s">.PDF .MD .TXT .DOCX .HTML .PNG .JPG</div>
+          <div class="row"><button class="btn sm" id="browseBtn"><span data-ico="upload"></span>Browse files</button><button class="btn sm" id="pasteBtn"><span data-ico="paste"></span>Paste text</button></div>
+          <input type="file" id="fileIn" multiple hidden accept=".pdf,.md,.markdown,.txt,.text,.docx,.html,.htm,.csv,.json,.tex,.rst,.org,.png,.jpg,.jpeg,.webp,.gif,application/pdf,text/*,image/*">
+        </div>
+        <div class="field"><span class="lbl">Extraction depth</span><div class="seg" id="depthSeg" style="--n:3"></div></div>
+        <div class="note" id="aiNote" hidden></div>
+        <ul class="docs" id="docList"></ul>
+      </section>
+      <section class="sec">
+        <div class="sec-h"><span>Filters</span><button class="link" id="resetFilters">Reset</button></div>
+        <div class="types" id="typeChips"></div>
+        <div class="field"><div class="lbl-row"><label class="lbl" for="minDeg">Min. connections</label><span class="meta" id="minDegVal">0</span></div><input type="range" id="minDeg" min="0" max="8" step="1" value="0"></div>
+        <div class="field"><span class="lbl">Labels</span><div class="seg" id="labelSeg" style="--n:3"></div></div>
+        <div class="field"><span class="lbl">Color by</span><div class="seg" id="colorSeg" style="--n:3"></div></div>
+        <div class="field"><span class="lbl">Layout</span><div class="seg" id="layoutSeg" style="--n:4"></div></div>
+        <div class="row"><button class="btn sm" id="freezeBtn" aria-pressed="false"><span data-ico="snow"></span>Freeze</button><button class="btn sm" id="reheatBtn"><span data-ico="bolt"></span>Reheat</button><button class="btn sm" id="fitBtn2"><span data-ico="fit"></span>Fit</button></div>
+      </section>
+      <section class="sec grow">
+        <div class="sec-h"><span>Console</span><span class="meta" id="logMeta"></span></div>
+        <ol class="log" id="log" aria-live="polite"></ol>
+      </section>
+    </aside>
+
+    <main class="stage" id="stage" aria-label="Knowledge graph">
+      <canvas id="cv" aria-label="Interactive knowledge graph. Use search or the panels to navigate with the keyboard."></canvas>
+      <span class="crn a"></span><span class="crn b"></span><span class="crn c"></span><span class="crn d"></span>
+      <div class="ov-tl">
+        <div class="banner" id="banner" hidden></div>
+        <div class="focusbar" id="focusbar" hidden><span>Focus</span><b id="focusName"></b><div class="seg" id="hopSeg" style="--n:2"></div><button class="btn sm" id="focusExit">Exit</button></div>
+      </div>
+      <div class="legend" id="legend"></div>
+      <div class="ov-bl">
+        <div class="readout" id="readout"></div>
+        <div class="timeline">
+          <button class="btn sm icon" id="replayBtn" title="Replay how the graph grew (R)" aria-label="Replay growth"><span data-ico="play"></span></button>
+          <input type="range" id="tl" min="0" max="1000" value="1000" aria-label="Time travel through your sources">
+          <span class="tl-l" id="tlLabel">ALL</span>
+        </div>
+      </div>
+      <div class="ov-br">
+        <div class="zoomctl">
+          <button class="btn sm icon" id="legendBtn" aria-label="Legend" title="Legend"><span data-ico="layers"></span></button>
+          <button class="btn sm icon" id="zIn" aria-label="Zoom in" title="Zoom in"><span data-ico="plus"></span></button>
+          <button class="btn sm icon" id="zOut" aria-label="Zoom out" title="Zoom out"><span data-ico="minus"></span></button>
+          <button class="btn sm icon" id="zFit" aria-label="Fit graph (F)" title="Fit graph (F)"><span data-ico="fit"></span></button>
+        </div>
+        <canvas id="mini" aria-label="Minimap"></canvas>
+      </div>
+      <div class="tip" id="tip" hidden></div>
+      <div class="empty" id="empty" hidden></div>
+      <div class="dropveil" id="dropveil" hidden><div>Release to ingest</div></div>
+      <div class="ctxmenu" id="ctxmenu" hidden role="menu"></div>
+    </main>
+
+    <aside class="deck panel" aria-label="Analysis">
+      <nav class="tabs" role="tablist">
+        <button class="tab" role="tab" id="tab-inspect" data-tab="inspect" aria-selected="true">Inspect <kbd>1</kbd></button>
+        <button class="tab" role="tab" id="tab-ask" data-tab="ask" aria-selected="false">Ask <kbd>2</kbd></button>
+        <button class="tab" role="tab" id="tab-path" data-tab="path" aria-selected="false">Path <kbd>3</kbd></button>
+        <button class="tab" role="tab" id="tab-insights" data-tab="insights" aria-selected="false">Insights <kbd>4</kbd></button>
+      </nav>
+      <div class="pane" id="pane-inspect" role="tabpanel"></div>
+      <div class="pane ask" id="pane-ask" role="tabpanel" hidden>
+        <div class="ask-log" id="askLog"></div>
+        <form class="ask-form" id="askForm">
+          <textarea class="ta" id="askIn" placeholder="Ask anything about your sources…" aria-label="Question"></textarea>
+          <div class="ask-btns">
+            <button class="btn icon" type="button" id="micBtn" title="Dictate" aria-label="Dictate a question" hidden><span data-ico="mic"></span></button>
+            <button class="btn primary icon" type="submit" id="askSend" aria-label="Ask"><span data-ico="send"></span></button>
+          </div>
+          <div class="partial" id="askPartial" hidden></div>
+        </form>
+      </div>
+      <div class="pane" id="pane-path" role="tabpanel" hidden></div>
+      <div class="pane" id="pane-insights" role="tabpanel" hidden></div>
+    </aside>
+  </div>
+  <div class="toasts" id="toasts" aria-live="polite"></div>
+  <div class="modal" id="modal" hidden></div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
